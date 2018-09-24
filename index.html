@@ -75,15 +75,15 @@
       stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
       });
-      
-      
+
+
       player.setBounce(0.2);
       player.setCollideWorldBounds(true);
       player.body.setGravityY(900);
-      
+
       this.physics.add.collider(player, platforms);
       this.physics.add.collider(stars, platforms);
-      
+
       bombs = this.physics.add.group();
       this.physics.add.collider(bombs, platforms);
       this.physics.add.collider(player, bombs, hitBomb, null, this);
@@ -110,33 +110,35 @@
 
       this.physics.add.overlap(player, stars, collectStar, null, this);
 
-      scoreText = this.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#000'})
+      scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' })
     }
 
     function update() {
-      if (cursor.left.isDown) {
-        player.setVelocityX(-230);
-        player.anims.play('left', true);
-      }
-      else if (cursor.right.isDown) {
-        player.setVelocityX(230);
-        player.anims.play('right', true);
-      }
-      else {
-        player.setVelocityX(0);
-        player.anims.play('turn', true);
-      }
-      if (cursor.up.isDown && player.body.touching.down) {
-        player.setVelocityY(-800);
+      if (!gameOver) {
+        if (cursor.left.isDown) {
+          player.setVelocityX(-230);
+          player.anims.play('left', true);
+        }
+        else if (cursor.right.isDown) {
+          player.setVelocityX(230);
+          player.anims.play('right', true);
+        }
+        else {
+          player.setVelocityX(0);
+          player.anims.play('turn', true);
+        }
+        if (cursor.up.isDown && player.body.touching.down) {
+          player.setVelocityY(-800);
+        }
       }
     }
 
     function collectStar(player, star) {
       star.disableBody(true, true);
 
-      score += 10; 
+      score += 10;
       scoreText.setText('score: ' + score);
-      
+
       if (stars.countActive(true) === 0) {
         stars.children.iterate(function (child) {
 
@@ -156,11 +158,11 @@
     }
 
     function hitBomb(player, bomb) {
-      this.physics.pause();
       player.setTint(0xff0000);
-      play.anims.play('turn');
+      player.anims.play('turn');
+      this.physics.pause();
       gameOver = true;
-      scoreText.setText('final score: ' + score + 'GAME OVER');
+        scoreText.setText('final score: ' + score);
     }
   </script>
 
